@@ -1,5 +1,5 @@
 import {
-    BadGatewayException,
+  BadGatewayException,
   BadRequestException,
   ConflictException,
   ForbiddenException,
@@ -11,23 +11,22 @@ import { SignInDto } from '../dto/sing-in.dto';
 
 import { Request, Response } from 'express';
 import * as bcrypt from 'bcrypt';
-// import * as cookies from "cookie-parser"
-import { AdminService } from '../../admin/admin.service';
-import { CreateAdminDto } from '../../admin/dto/create-admin.dto';
-import { Admin } from '../../admin/entities/admin.entity';
+import { TeacherService } from '../../teacher/teacher.service';
+import { CreateTeacherDto } from '../../teacher/dto/create-teacher.dto';
+import { Teacher } from '../../teacher/entities/teacher.entity';
 
 @Injectable()
-export class AdminAuthService {
+export class AuthTeacherService {
   constructor(
-    private readonly adminService: AdminService,
+    private readonly teacherService: TeacherService,
     readonly jwtService: JwtService,
   ) {}
 
-  async AdmingenerateToken(admin: Admin) {
+  async generateToken(teacher: Teacher) {
     const payload = {
-      id: admin.id,
-      is_active: admin.is_active,
-      is_creator: admin.is_creater,
+      id: teacher.id,
+      is_active: teacher.is_active,
+      is_creator: teacher.is_creater,
     };
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
@@ -44,32 +43,34 @@ export class AdminAuthService {
       refreshToken,
     };
   }
-  async signUpAdmin(createAdminDto: CreateAdminDto) {
-    const candidate = await this.adminService.findAdminByEmail(
-      createAdminDto.email,
+  async signUpTeacher(createTeacherDto: CreateTeacherDto) {
+    const candidate = await this.teacherService.findTeacherByEmail(
+      createTeacherDto.email,
     );
     if (candidate) {
       throw new ConflictException('Bunday foydalanuvchi mavjud');
     }
-    const newAdmin = await this.adminService.create(createAdminDto);
-    return { message: "Foydalanuvchi qo'shildi", adminId: newAdmin.id };
+    const newTeacher = await this.teacherService.create(createTeacherDto);
+    return { message: "Foydalanuvchi qo'shildi", teacherId: newTeacher.id };
   }
 
-  async signInAdmin(singInDto: SignInDto, res: Response) {
-    const admin = await this.adminService.findAdminByEmail(singInDto.email);
+  async signInTeacher(singInDto: SignInDto, res: Response) {
+    const teacher = await this.teacherService.findTeacherByEmail(
+      singInDto.email,
+    );
 
-    if (!admin) {
+    if (!teacher) {
       throw new BadRequestException('Email yoki passwor hato');
     }
     const isValidPassword = await bcrypt.compare(
       singInDto.password,
-      admin.hashed_password,
+      teacher.hashed_password,
     );
 
     if (!isValidPassword) {
-      throw new BadRequestException('Email yoki passwor hato p ');
+      throw new BadRequestException("Email yoki passwor notug'ri");
     }
-    const tokens = await this.AdmingenerateToken(admin);
+    const tokens = await this.generateToken(teacher);
     res.cookie('refresh_token', tokens.refreshToken, {
       httpOnly: true,
       maxAge: Number(process.env.COOKIE_TIME),
@@ -77,8 +78,8 @@ export class AdminAuthService {
 
     try {
       const hashed_refresh_token = await bcrypt.hash(tokens.refreshToken, 7);
-      admin.refresh_token = hashed_refresh_token;
-      await this.adminService.update(admin.id, admin);
+      teacher.refresh_token = hashed_refresh_token;
+      await this.teacherService.update(teacher.id, teacher);
     } catch (error) {
       console.log('Token da xatolik !?!');
     }
@@ -89,18 +90,18 @@ export class AdminAuthService {
     };
   }
 
-  async signOutAdmin(req: Request, res: Response) {
+  async signOutTeacher(req: Request, res: Response) {
     const refresh_token = req.cookies.refresh_token;
 
-    const admin = await this.adminService.findAdminByRefresh(refresh_token);
+    const admin = await this.teacherService.findTeacherByRefresh(refresh_token);
 
     if (!admin) {
       throw new BadGatewayException("Token yoq yoki noto'g'ri");
     }
-    admin.refresh_token = "";
-    await this.adminService.update(admin.id, admin);
+    admin.refresh_token = '';
+    await this.teacherService.update(admin.id, admin);
 
-    res.clearCookie("refresh_token");
+    res.clearCookie('refresh_token');
 
     return { message: "Siz endi yo'q siz !?" };
   }
@@ -111,9 +112,8 @@ export class AdminAuthService {
     if (adminId !== decodeToken['id']) {
       throw new ForbiddenException('Ruxsat etilmagan');
     }
-    const admin = await this.adminService.findOne(adminId);
+    const admin = await this.teacherService.findOne(adminId);
 
-    // console.log('Hashed token:', staff?.hashed_refresh_token);
 
     if (!admin || !admin.refresh_token) {
       throw new NotFoundException('staff not found');
@@ -124,10 +124,13 @@ export class AdminAuthService {
     if (!tokenMatch) {
       throw new ForbiddenException('Forbidden');
     }
-    const { accessToken, refreshToken } = await this.AdmingenerateToken(admin);
+    const { accessToken, refreshToken } = await this.generateToken(admin);
 
     const hashed_refresh_token = await bcrypt.hash(refreshToken, 7);
-    await this.adminService.updateRefreshToken(admin.id, hashed_refresh_token);
+    await this.teacherService.updateRefreshToken(
+      admin.id,
+      hashed_refresh_token,
+    );
 
     res.cookie('refresh_token', refreshToken, {
       maxAge: Number(process.env.COOKIE_TIME),

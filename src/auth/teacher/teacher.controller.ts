@@ -1,16 +1,17 @@
 import { Body, Controller, Post, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { AdminAuthService } from './auth.service';
 import { CreateAdminDto } from '../../admin/dto/create-admin.dto';
 import { SignInDto } from '../dto/sing-in.dto';
+import { AuthTeacherService } from './teacher.service';
+import { CreateTeacherDto } from '../../teacher/dto/create-teacher.dto';
 
 @Controller('auth')
-export class AuthAdminController {
-  constructor(private readonly authService: AdminAuthService) {}
+export class TeacherController {
+  constructor(private readonly authTeacher: AuthTeacherService) {}
 
-  @Post('admin-sign-up')
-  async signUp(@Body() createAdminDto: CreateAdminDto) {
-    return this.authService.signUpAdmin(createAdminDto);
+  @Post('teacher-sign-up')
+  async signUp(@Body() creatTeacherDto: CreateTeacherDto) {
+    return this.authTeacher.signUpTeacher(creatTeacherDto);
   }
 
   @Post('admin-sign-in')
@@ -18,24 +19,24 @@ export class AuthAdminController {
     @Body() signInDto: SignInDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    return this.authService.signInAdmin(signInDto, res);
+    return this.authTeacher.signInTeacher(signInDto, res);
   }
 
-  @Post('admin-sign-out')
+  @Post('teacher-sign-out')
   async signOut(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    return this.authService.signOutAdmin(req, res);
+    return this.authTeacher.signOutTeacher(req, res);
   }
 
-  @Post('admin-refresh')
+  @Post('teacher-refresh')
   async refreshToken(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
     const adminId = req.body.adminId;
     const refresh_token = req.body.refresh_token;
-    return this.authService.refreshToken(adminId, refresh_token, res);
+    return this.authTeacher.refreshToken(adminId, refresh_token, res);
   }
 }

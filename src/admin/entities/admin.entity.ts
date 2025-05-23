@@ -18,17 +18,14 @@ export class Admin {
   email: string;
 
   @Column()
-  password: string;
-
-  @Column({ default: 0 })
-  is_creater: boolean;
-
-  @Column({ default: 0})
-  is_active: boolean;
+  hashed_password: string;
 
   @Column({ nullable: true })
   refresh_token: string;
 
-//   @Column({ nullable: true })
-//   assigned_region_id: number;
+  @Column({ default: 0 })
+  is_creater: boolean;
+
+  @Column({ default: 0 })
+  is_active: boolean;
 }

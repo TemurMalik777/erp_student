@@ -1,48 +1,80 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Admin, Repository } from 'typeorm';
+import {
+  BadGatewayException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
-import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Admin } from './entities/admin.entity';
+import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AdminService {
   constructor(
-    @InjectRepository(Admin)
-    private readonly adminRepo: Repository<Admin>,
+    @InjectRepository(Admin) private readonly adminRepo: Repository<Admin>,
   ) {}
 
-  async create(createAdminDto: CreateAdminDto): Promise<Admin> {
-    const admin = this.adminRepo.create(createAdminDto as Partial<Admin>);
-    return this.adminRepo.save(admin);
+  async create(createAdminDto: CreateAdminDto) {
+    const { password, confirm_password, ...otherData } = createAdminDto;
+    if (password != confirm_password) {
+      throw new BadGatewayException('Parollar mos emas');
+    }
+    const hashed_password = await bcrypt.hash(password, 7);
+    return this.adminRepo.save({
+      ...otherData,
+      hashed_password,
+    });
   }
-
-  // async create(createAdminDto: CreateAdminDto) {
-  //   const newAdmin = this.adminRepo.save(createAdminDto);
-  //   return this.adminRepo.save(newAdmin);
-  // }
 
   findAll() {
     return this.adminRepo.find();
   }
 
-  async findOne(id: number): Promise<Admin | null> {
-    return this.adminRepo.findOneBy(<any>{ id });
-  }
-
-  async update(id: number, updateAdminDto: UpdateAdminDto): Promise<void> {
-    await this.adminRepo.update(
-      id,
-      updateAdminDto as QueryDeepPartialEntity<Admin>,
-    );
-  }
-
-  async remove(id: number): Promise<{ message: string }> {
-    const admin = await this.findOne(id);
+  async findOne(id: number) {
+    const admin = await this.adminRepo.findOneBy({ id });
     if (!admin) {
-      throw new Error(`Admin with ID ${id} not found`);
+      throw new NotFoundException('Admin topilmadi');
     }
-    await this.adminRepo.remove(admin);
-    return { message: `Admin with ID ${id} has been removed` };
+    return admin;
+  }
+
+  async findAdminByEmail(email: string) {
+    const admin = await this.adminRepo.findOne({ where: { email } });
+    return admin;
+  }
+
+  async findAdminByRefresh(refresh_token: string) {
+    const admins = await this.adminRepo.find();
+
+    for (const admin of admins) {
+      const match = await bcrypt.compare(refresh_token, admin.refresh_token);
+      if (match) return admin;
+    }
+
+    return null;
+  }
+
+  async update(id: number, updateAdminDto: UpdateAdminDto) {
+    const update = await this.adminRepo.update(id, updateAdminDto);
+    if (!update) {
+      throw new NotFoundException('Admin topilmadi');
+    }
+    return update;
+  }
+
+  async remove(id: number) {
+    const delet = await this.adminRepo.delete(id);
+    if (!delet) {
+      throw new NotFoundException('Admin topilmadi');
+    }
+    return {
+      message: "Ma'lumotlar o'chirib yuborildi",
+    };
+  }
+  async updateRefreshToken(id: number, refresh_token: string) {
+    await this.adminRepo.update(id, { refresh_token });
+    return { message: 'Refresh token updated successfully' };
   }
 }

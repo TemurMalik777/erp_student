@@ -23,7 +23,7 @@ export class Teacher {
   email: string;
 
   @Column()
-  password: string;
+  hashed_password: string;
 
   @Column({ default: Role })
   role: string;
