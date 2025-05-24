@@ -13,6 +13,7 @@ export class TeacherService {
     private readonly teacherRepo: Repository<Teacher>,
   ) {}
 
+  
   create(createTeacherDto: CreateTeacherDto) {
     return this.teacherRepo.save(createTeacherDto);
   }

@@ -1,7 +1,12 @@
 import { Field, InputType } from '@nestjs/graphql';
 
+export enum Gender {
+  MALE = 'male',
+  FEMALE = 'female',
+}
+
 @InputType()
-export class CreateTeacherDto {
+export class CreateStudentDto {
   @Field()
   id: number;
 
@@ -21,5 +26,11 @@ export class CreateTeacherDto {
   password: string;
 
   @Field()
-  role: string;
+  gender: Gender;
+
+  @Field()
+  date_of_brith: string;
+
+  @Field()
+  refresh_token: string;
 }

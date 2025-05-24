@@ -1,4 +1,19 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateTeacherDto } from './create-teacher.dto';
+import { Field, InputType } from '@nestjs/graphql';
 
-export class UpdateTeacherDto extends PartialType(CreateTeacherDto) {}
+@InputType()
+export class UpdateTeacherDto {
+  @Field()
+  first_name?: string;
+
+  @Field()
+  last_name?: string;
+
+  @Field()
+  phone?: string;
+
+  @Field()
+  email?: string;
+
+  @Field()
+  password?: string;
+}
