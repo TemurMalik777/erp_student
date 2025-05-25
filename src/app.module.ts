@@ -8,6 +8,8 @@ import { Admin } from 'typeorm';
 import { Teacher } from './teacher/entities/teacher.entity';
 import { StudentsModule } from './students/students.module';
 import { CoursesModule } from './courses/courses.module';
+import { GroupsModule } from './groups/groups.module';
+import { AttendancesModule } from './attendances/attendances.module';
 
 @Module({
   imports: [
@@ -32,6 +34,8 @@ import { CoursesModule } from './courses/courses.module';
     AuthModule,
     StudentsModule,
     CoursesModule,
+    GroupsModule,
+    AttendancesModule,
   ],
   controllers: [],
   providers: [],
