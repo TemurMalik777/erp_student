@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { Admin } from 'typeorm';
 import { Teacher } from './teacher/entities/teacher.entity';
 import { StudentsModule } from './students/students.module';
+import { CoursesModule } from './courses/courses.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { StudentsModule } from './students/students.module';
     TeacherModule,
     AuthModule,
     StudentsModule,
+    CoursesModule,
   ],
   controllers: [],
   providers: [],

@@ -10,33 +10,40 @@ import {
 import { TeacherService } from './teacher.service';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { UpdateTeacherDto } from './dto/update-teacher.dto';
+import { Args, ID, Mutation, Query } from '@nestjs/graphql';
+import { Teacher } from './entities/teacher.entity';
 
 @Controller('teacher')
 export class TeacherResolver {
   constructor(private readonly teacherService: TeacherService) {}
 
-  @Post()
-  create(@Body() createTeacherDto: CreateTeacherDto) {
+  @Mutation(() => Teacher)
+  async createTeacher(
+    @Args('createTeacher') createTeacherDto: CreateTeacherDto,
+  ) {
     return this.teacherService.create(createTeacherDto);
   }
 
-  @Get()
-  findAll() {
+  @Query(() => [Teacher])
+  findAllTeacher() {
     return this.teacherService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.teacherService.findOne(+id);
+  @Query(() => Teacher)
+  findOneTeacher(@Args('id', { type: () => ID }) id: number) {
+    return this.teacherService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTeacherDto: UpdateTeacherDto) {
-    return this.teacherService.update(+id, updateTeacherDto);
+  updateTeacher(
+    @Args('id', { type: () => ID }) id: number,
+    @Args('updateTeacher') updateTeacherDto: UpdateTeacherDto,
+  ) {
+    return this.teacherService.update(id, updateTeacherDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.teacherService.remove(+id);
+  @Mutation(() => Number)
+  remove(@Args('id', { type: () => ID }) id: number) {
+    return this.teacherService.remove(id);
   }
 }

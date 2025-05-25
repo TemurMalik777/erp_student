@@ -37,8 +37,8 @@ export class Student {
   @Column({ default: false })
   is_active: boolean;
 
-  @Field({ defaultValue: Gender })
-  @Column({ default: Gender })
+  @Field({ defaultValue: Gender.MALE })
+  @Column({ default: Gender.MALE })
   gender: Gender;
 
   @Field({ defaultValue: false })

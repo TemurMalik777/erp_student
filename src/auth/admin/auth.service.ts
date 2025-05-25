@@ -11,7 +11,6 @@ import { SignInDto } from '../dto/sing-in.dto';
 
 import { Request, Response } from 'express';
 import * as bcrypt from 'bcrypt';
-// import * as cookies from "cookie-parser"
 import { AdminService } from '../../admin/admin.service';
 import { CreateAdminDto } from '../../admin/dto/create-admin.dto';
 import { Admin } from '../../admin/entities/admin.entity';

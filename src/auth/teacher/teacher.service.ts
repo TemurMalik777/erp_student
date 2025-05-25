@@ -93,42 +93,45 @@ export class AuthTeacherService {
   async signOutTeacher(req: Request, res: Response) {
     const refresh_token = req.cookies.refresh_token;
 
-    const admin = await this.teacherService.findTeacherByRefresh(refresh_token);
+    const teacher =
+      await this.teacherService.findTeacherByRefresh(refresh_token);
 
-    if (!admin) {
+    if (!teacher) {
       throw new BadGatewayException("Token yoq yoki noto'g'ri");
     }
-    admin.refresh_token = '';
-    await this.teacherService.update(admin.id, admin);
+    teacher.refresh_token = '';
+    await this.teacherService.update(teacher.id, teacher);
 
     res.clearCookie('refresh_token');
 
     return { message: "Siz endi yo'q siz !?" };
   }
 
-  async refreshToken(adminId: number, refresh_token: string, res: Response) {
+  async refreshToken(teacherId: number, refresh_token: string, res: Response) {
     const decodeToken = await this.jwtService.decode(refresh_token);
 
-    if (adminId !== decodeToken['id']) {
+    if (teacherId !== decodeToken['id']) {
       throw new ForbiddenException('Ruxsat etilmagan');
     }
-    const admin = await this.teacherService.findOne(adminId);
+    const teacher = await this.teacherService.findOne(teacherId);
 
-
-    if (!admin || !admin.refresh_token) {
+    if (!teacher || !teacher.refresh_token) {
       throw new NotFoundException('staff not found');
     }
 
-    const tokenMatch = await bcrypt.compare(refresh_token, admin.refresh_token);
+    const tokenMatch = await bcrypt.compare(
+      refresh_token,
+      teacher.refresh_token,
+    );
 
     if (!tokenMatch) {
       throw new ForbiddenException('Forbidden');
     }
-    const { accessToken, refreshToken } = await this.generateToken(admin);
+    const { accessToken, refreshToken } = await this.generateToken(teacher);
 
     const hashed_refresh_token = await bcrypt.hash(refreshToken, 7);
     await this.teacherService.updateRefreshToken(
-      admin.id,
+      teacher.id,
       hashed_refresh_token,
     );
 
@@ -137,8 +140,8 @@ export class AuthTeacherService {
       httpOnly: true,
     });
     const respnose = {
-      message: 'Staff refreshed',
-      patientId: admin.id,
+      message: 'teacher refreshed',
+      patientId: teacher.id,
       access_token: accessToken,
     };
     return respnose;

@@ -5,7 +5,7 @@ import { SignInDto } from '../dto/sing-in.dto';
 import { AuthTeacherService } from './teacher.service';
 import { CreateTeacherDto } from '../../teacher/dto/create-teacher.dto';
 
-@Controller('auth')
+@Controller('teacher-auth')
 export class TeacherController {
   constructor(private readonly authTeacher: AuthTeacherService) {}
 
