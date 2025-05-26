@@ -1,11 +1,5 @@
 import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
+  Controller
 } from '@nestjs/common';
 import { TeacherService } from './teacher.service';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
@@ -34,7 +28,7 @@ export class TeacherResolver {
     return this.teacherService.findOne(id);
   }
 
-  @Patch(':id')
+  @Mutation(() => Teacher)
   updateTeacher(
     @Args('id', { type: () => ID }) id: number,
     @Args('updateTeacher') updateTeacherDto: UpdateTeacherDto,
@@ -43,7 +37,7 @@ export class TeacherResolver {
   }
 
   @Mutation(() => Number)
-  remove(@Args('id', { type: () => ID }) id: number) {
+  removeTeacher(@Args('id', { type: () => ID }) id: number) {
     return this.teacherService.remove(id);
   }
 }
