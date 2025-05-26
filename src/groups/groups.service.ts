@@ -1,19 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Group } from './entities/group.entity';
+import { Groups } from './entities/group.entity';
 import { Repository } from 'typeorm';
+import { Course } from '../courses/entities/course.entity';
 
 @Injectable()
 export class GroupsService {
   constructor(
-    @InjectRepository(Group)
-    private readonly groupRepo: Repository<Group>,
+    @InjectRepository(Groups)
+    private readonly groupRepo: Repository<Groups>,
   ) {}
 
-  async create(createGroupDto: CreateGroupDto) {
-    return this.groupRepo.save(createGroupDto);
+  async create(createGroupDto: CreateGroupDto, courseId: Course) {
+    return this.groupRepo.save({ ...createGroupDto, courseId });
   }
 
   findAll() {
@@ -24,8 +25,17 @@ export class GroupsService {
     return this.groupRepo.findOneBy({ id });
   }
 
-  update(id: number, updateGroupDto: UpdateGroupDto) {
-    return this.groupRepo.update({ id }, updateGroupDto);
+  async update(id: number, updateGroupDto: UpdateGroupDto) {
+    // const { courseId, ...rest } = updateGroupDto;
+    // const group = await this.groupRepo.preload({
+    //   id,
+    //   ...rest,
+    //   ...(courseId !== undefined ? { courseId: { id: courseId } } : {}),
+    // });
+    // if (!group) {
+    //   throw new NotFoundException('Group not found', `${id}`);
+    // }
+    // return this.groupRepo.save(group);
   }
 
   remove(id: number) {

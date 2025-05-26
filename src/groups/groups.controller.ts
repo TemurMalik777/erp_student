@@ -15,10 +15,10 @@ import { UpdateGroupDto } from './dto/update-group.dto';
 export class GroupsController {
   constructor(private readonly groupsService: GroupsService) {}
 
-  @Post()
-  create(@Body() createGroupDto: CreateGroupDto) {
-    return this.groupsService.create(createGroupDto);
-  }
+  // @Post()
+  // create(@Body() createGroupDto: CreateGroupDto) {
+  //   return this.groupsService.create(createGroupDto);
+  // }
 
   @Get()
   findAll() {

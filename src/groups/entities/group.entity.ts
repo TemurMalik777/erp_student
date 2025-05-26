@@ -1,9 +1,16 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Course } from '../../courses/entities/course.entity';
 
 @ObjectType()
 @Entity()
-export class Group {
+export class Groups {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
   id: number;
@@ -12,9 +19,9 @@ export class Group {
   @Column()
   name: string;
 
-  @Field()
-  @Column()
-  courseId: number;
+  @ManyToMany((type) => Course, (course) => course.groups)
+  @Field((type) => Course)
+  course: Course;
 
   @Field()
   @Column()

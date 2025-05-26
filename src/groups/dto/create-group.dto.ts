@@ -1,4 +1,5 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, Int } from '@nestjs/graphql';
+import { Course } from '../../courses/entities/course.entity';
 
 @InputType()
 export class CreateGroupDto {
@@ -8,8 +9,8 @@ export class CreateGroupDto {
   @Field()
   name: string;
 
-  @Field()
-  courseId: number;
+  @Field((type) => Int, { nullable: true })
+  course: Course;
 
   @Field()
   start_date: string;
