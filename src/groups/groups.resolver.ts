@@ -7,7 +7,7 @@ import { Groups } from './entities/group.entity';
 import { CoursesResolver } from '../courses/courses.resolver';
 
 @Controller('groups')
-export class GroupsController {
+export class GroupsResolver {
   constructor(
     private readonly groupsService: GroupsService,
     private readonly courseReslover: CoursesResolver,

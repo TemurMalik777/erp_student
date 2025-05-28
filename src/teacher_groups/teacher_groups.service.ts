@@ -4,6 +4,7 @@ import { UpdateTeacherGroupDto } from './dto/update-teacher_group.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TeacherGroup } from './entities/teacher_group.entity';
 import { Repository } from 'typeorm';
+import { Groups } from '../groups/entities/group.entity';
 
 @Injectable()
 export class TeacherGroupsService {
@@ -12,8 +13,16 @@ export class TeacherGroupsService {
     private readonly teachGroupRepo: Repository<TeacherGroup>,
   ) {}
 
-  async create(createTeacherGroupDto: CreateTeacherGroupDto) {
-    return this.teachGroupRepo.save(createTeacherGroupDto);
+  async create(
+    createTeacherGroupDto: CreateTeacherGroupDto,
+    teachGpId: Groups,
+  ) {
+    const newTeacherGroup = this.teachGroupRepo.create({
+      ...createTeacherGroupDto,
+      teachGpId,
+    });
+
+    return this.teachGroupRepo.save(newTeacherGroup);
   }
 
   findAll() {

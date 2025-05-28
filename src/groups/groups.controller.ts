@@ -15,10 +15,12 @@ import { UpdateGroupDto } from './dto/update-group.dto';
 export class GroupsController {
   constructor(private readonly groupsService: GroupsService) {}
 
-  // @Post()
-  // create(@Body() createGroupDto: CreateGroupDto) {
-  //   return this.groupsService.create(createGroupDto);
-  // }
+  @Post()
+  create(@Body() createGroupDto: CreateGroupDto) {
+    // You need to obtain courseId (of type Course) from somewhere, e.g., from the body or another source.
+    // For example, if courseId is part of createGroupDto:
+    return this.groupsService.create(createGroupDto, createGroupDto.course);
+  }
 
   @Get()
   findAll() {

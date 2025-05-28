@@ -1,5 +1,7 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Groups } from '../../groups/entities/group.entity';
+import { Teacher } from '../../teacher/entities/teacher.entity';
 
 @ObjectType()
 @Entity()
@@ -8,11 +10,11 @@ export class TeacherGroup {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field()
-  @Column()
-  teacherId: number;
+  @ManyToMany((type) => Teacher, (tchGroupId) => tchGroupId.teachers)
+  @Field((type) => Teacher)
+  tchGroupId: Teacher;
 
-  @Field()
-  @Column()
-  groupId: number;
+  @ManyToMany((type) => Groups, (teachGpId) => teachGpId.group)
+  @Field((type) => Groups)
+  teachGpId: Groups;
 }

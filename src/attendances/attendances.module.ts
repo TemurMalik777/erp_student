@@ -7,7 +7,7 @@ import { Attendance } from './entities/attendance.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Attendance])],
   controllers: [AttendancesController],
-  providers: [AttendancesService],
+  providers: [AttendancesService, ],
   exports: [AttendancesService],
 })
 export class AttendancesModule {}

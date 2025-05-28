@@ -1,5 +1,7 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Attendance } from '../../attendances/entities/attendance.entity';
+import { Groups } from '../../groups/entities/group.entity';
 
 @ObjectType()
 @Entity()
@@ -8,9 +10,9 @@ export class Schedule {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field()
-  @Column()
-  groupId: number;
+  @ManyToMany((type)=>Groups, (groups)=>groups.groupId)
+  @Field((type)=>Groups)
+  groups: Groups;
 
   @Field()
   @Column()
@@ -23,4 +25,8 @@ export class Schedule {
   @Field()
   @Column()
   end_time: string;
+
+  @OneToMany((type)=>Attendance, (attend)=>attend.scheduleId)
+  @Field((type)=>[Attendance])
+  attends: Attendance[]
 }

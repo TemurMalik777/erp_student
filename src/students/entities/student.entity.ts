@@ -1,5 +1,9 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { StudentGroup } from '../../student_group/entities/student_group.entity';
+import { Attendance } from '../../attendances/entities/attendance.entity';
+import { HomeworkSubmission } from '../../homework_submission/entities/homework_submission.entity';
+import { Grade } from '../../grades/entities/grade.entity';
 
 export enum Gender {
   MALE = 'male',
@@ -48,4 +52,17 @@ export class Student {
   @Field({ nullable: true })
   @Column({ nullable: true })
   refresh_token: string;
+
+  @OneToMany((type) => StudentGroup, (studentGr) => studentGr.student_id)
+  @Field((type) => [StudentGroup])
+  studentGrId: StudentGroup[];
+
+  @OneToMany(() => Attendance, (attendance) => attendance.student)
+  attendance: Attendance[];
+
+  @OneToMany(()=>HomeworkSubmission,(hsubmission)=>hsubmission.student)
+  hsubmission:HomeworkSubmission[]
+
+  @OneToMany(()=>Grade,(grade)=>grade.student)
+  grade:Grade[]
 }

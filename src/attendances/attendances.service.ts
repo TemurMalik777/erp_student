@@ -4,6 +4,7 @@ import { UpdateAttendanceDto } from './dto/update-attendance.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Attendance } from './entities/attendance.entity';
 import { Repository } from 'typeorm';
+import { Schedule } from '../schedules/entities/schedule.entity';
 
 @Injectable()
 export class AttendancesService {
@@ -12,10 +13,13 @@ export class AttendancesService {
     private readonly attendanceRepo: Repository<Attendance>,
   ) {}
 
-  async create(createAttendanceDto: CreateAttendanceDto) {
-    return this.attendanceRepo.save(createAttendanceDto);
+  async create(createAttendanceDto: CreateAttendanceDto, scheduleId: Schedule) {
+    const newSchedule = this.attendanceRepo.create({
+      ...createAttendanceDto,
+      scheduleId,
+    });
+    return this.attendanceRepo.save(newSchedule);
   }
-
   findAll() {
     return this.attendanceRepo.find();
   }

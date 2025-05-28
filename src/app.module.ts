@@ -13,6 +13,15 @@ import { AttendancesModule } from './attendances/attendances.module';
 import { SchedulesModule } from './schedules/schedules.module';
 import { StudentGroupModule } from './student_group/student_group.module';
 import { TeacherGroupsModule } from './teacher_groups/teacher_groups.module';
+import { GradesModule } from './grades/grades.module';
+import { MediaModule } from './media/media.module';
+import { ExamResultsModule } from './exam_results/exam_results.module';
+import { ExamsModule } from './exams/exams.module';
+import { ExamTeacherModule } from './exam_teacher/exam_teacher.module';
+import { PaymentsModule } from './payments/payments.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { HomeworkSubmissionsModule } from './homework_submission/homework_submission.module';
+import { HomeworkModule } from './homeworks/homeworks.module';
 
 @Module({
   imports: [
@@ -42,6 +51,15 @@ import { TeacherGroupsModule } from './teacher_groups/teacher_groups.module';
     SchedulesModule,
     StudentGroupModule,
     TeacherGroupsModule,
+    GradesModule,
+    HomeworkSubmissionsModule,
+    MediaModule,
+    HomeworkModule,
+    ExamResultsModule,
+    ExamsModule,
+    ExamTeacherModule,
+    PaymentsModule,
+    NotificationsModule,
   ],
   controllers: [],
   providers: [],

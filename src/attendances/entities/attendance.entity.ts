@@ -1,5 +1,13 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Schedule } from '../../schedules/entities/schedule.entity';
+import { Student } from '../../students/entities/student.entity';
 
 @ObjectType()
 @Entity()
@@ -8,13 +16,12 @@ export class Attendance {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field()
-  @Column()
-  studnetId: number;
+  @ManyToOne(() => Student, (student) => student.attendance)
+  student: Student;
 
-  @Field()
-  @Column()
-  scheduleId: number;
+  @ManyToMany((type) => Schedule, (scheduleId) => scheduleId.attends)
+  @Field((type) => Schedule)
+  scheduleId: Schedule;
 
   @Field()
   @Column()

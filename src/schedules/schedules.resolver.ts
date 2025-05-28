@@ -14,7 +14,7 @@ import { Args, ID, Mutation, Query } from '@nestjs/graphql';
 import { Schedule } from './entities/schedule.entity';
 
 @Controller('schedules')
-export class SchedulesController {
+export class SchedulesReslover {
   constructor(private readonly schedulesService: SchedulesService) {}
 
   @Mutation(() => Schedule)

@@ -12,16 +12,22 @@ import { CreateTeacherGroupDto } from './dto/create-teacher_group.dto';
 import { UpdateTeacherGroupDto } from './dto/update-teacher_group.dto';
 import { Args, ID, Mutation, Query } from '@nestjs/graphql';
 import { TeacherGroup } from './entities/teacher_group.entity';
+import { GroupsResolver } from '../groups/groups.resolver';
 
 @Controller('teacher-groups')
 export class TeacherGroupsController {
-  constructor(private readonly teacherGroupsService: TeacherGroupsService) {}
+  constructor(
+    private readonly teacherGroupsService: TeacherGroupsService,
+    private readonly groupResolver: GroupsResolver,
+  ) {}
 
   @Mutation(() => TeacherGroup)
-  createTeacherGroup(
+  async createTeacherGroup(
     @Args('createTeacherGroup') createTeacherGroupDto: CreateTeacherGroupDto,
+    @Args('teachGroupId') teachGroupId: number,
   ) {
-    return this.teacherGroupsService.create(createTeacherGroupDto);
+    const teachGroup = await this.groupResolver.findOneGroup(+teachGroupId);
+    return this.teacherGroupsService.create(createTeacherGroupDto, teachGroup!);
   }
 
   @Query(() => [TeacherGroup])

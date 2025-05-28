@@ -8,8 +8,11 @@ export class TeacherGroupsController {
   constructor(private readonly teacherGroupsService: TeacherGroupsService) {}
 
   @Post()
-  create(@Body() createTeacherGroupDto: CreateTeacherGroupDto) {
-    return this.teacherGroupsService.create(createTeacherGroupDto);
+  create(
+    @Body() createTeacherGroupDto: CreateTeacherGroupDto,
+    @Body('teachGpId') teachGpId: any // 
+  ) {
+    return this.teacherGroupsService.create(createTeacherGroupDto, teachGpId);
   }
 
   @Get()

@@ -1,4 +1,4 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, Int } from '@nestjs/graphql';
 
 @InputType()
 export class CreateTeacherGroupDto {
@@ -8,6 +8,6 @@ export class CreateTeacherGroupDto {
   @Field()
   teacherId: number;
 
-  @Field()
-  groupId: number;
+  @Field((type)=>Int, {nullable: true})
+  teachGroupId: number;
 }

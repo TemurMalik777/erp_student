@@ -7,10 +7,10 @@ import { UpdateAttendanceDto } from './dto/update-attendance.dto';
 export class AttendancesController {
   constructor(private readonly attendancesService: AttendancesService) {}
 
-  @Post()
-  create(@Body() createAttendanceDto: CreateAttendanceDto) {
-    return this.attendancesService.create(createAttendanceDto);
-  }
+  // @Post()
+  // create(@Body() createAttendanceDto: CreateAttendanceDto) {
+  //   return this.attendancesService.create(createAttendanceDto);
+  // }
 
   @Get()
   findAll() {
